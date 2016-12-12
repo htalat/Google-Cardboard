@@ -17,7 +17,8 @@ public class Autowalk : MonoBehaviour
 	// This variable determinates if the player will move or not 
 	private bool isWalking = false;
 	
-	CardboardHead head = null;
+	GvrHead head = null;
+	GvrViewer viewer = null;
 	
 	//This is the variable for the player speed
 	[Tooltip("With this speed the player will move.")]
@@ -43,16 +44,17 @@ public class Autowalk : MonoBehaviour
 	void Start () 
 	{
 		head = Camera.main.GetComponent<StereoController>().Head;
+		viewer = GvrViewer.Instance;
 	}
 	
 	void Update () 
 	{
 		// Walk when the Cardboard Trigger is used 
-		if (walkWhenTriggered && !walkWhenLookDown && !isWalking && Cardboard.SDK.Triggered) 
+		if (walkWhenTriggered && !walkWhenLookDown && !isWalking && viewer.Triggered) 
 		{
 			isWalking = true;
 		} 
-		else if (walkWhenTriggered && !walkWhenLookDown && isWalking && Cardboard.SDK.Triggered) 
+		else if (walkWhenTriggered && !walkWhenLookDown && isWalking && viewer.Triggered) 
 		{
 			isWalking = false;
 		}
@@ -74,14 +76,14 @@ public class Autowalk : MonoBehaviour
 		// Walk when the Cardboard trigger is used and the player looks down below the threshold angle
 		if (walkWhenLookDown && walkWhenTriggered && !isWalking &&  
 		    head.transform.eulerAngles.x >= thresholdAngle && 
-		    Cardboard.SDK.Triggered &&
+		    viewer.Triggered &&
 		    head.transform.eulerAngles.x <= RIGHT_ANGLE) 
 		{
 			isWalking = true;
 		} 
 		else if (walkWhenLookDown && walkWhenTriggered && isWalking && 
 		         head.transform.eulerAngles.x >= thresholdAngle &&
-		         (Cardboard.SDK.Triggered ||
+		         (viewer.Triggered ||
 		         head.transform.eulerAngles.x >= RIGHT_ANGLE)) 
 		{
 			isWalking = false;
